@@ -1,0 +1,18 @@
+body{
+  height: 100vh;
+}
+
+.shelf {
+  background-image: url(../images/Wood-2.jpg);
+  background-size: contain;
+}
+
+.book{
+  background-image: url(../images/fzm-leather.jpg);
+  font-family: 'Calligraffitti';
+  font-size: 22px;
+}
+
+.card-title {
+  border-bottom: 2px solid #ffffff40;
+}
