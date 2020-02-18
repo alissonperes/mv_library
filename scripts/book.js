@@ -1,32 +1,17 @@
-let myLibrary = [];
-
 const set = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 const get = key => localStorage.getItem(key);
 const remove = key => localStorage.removeItem(key);
 
-let shelf = document.getElementById("shelf");
-get('index') || set('index', 0)
+const shelf = document.getElementById('shelf');
+get('index') || set('index', 0);
 
-let render = function(template, node) {
+const render = function render(template, node) {
   node.innerHTML += template;
 };
 
-function Book(author, title, pages, read) {
-  this.author = author;
-  this.title = title;
-  this.pages = pages;
-  this.read = read;
-  this.index = get('index');
-  set("index", parseInt(get("index")) + 1);
-  this.toggleRead = function() {
-    this.read = !this.read;
-    toggleButton(this.index);
-  };
-}
-
 function addBookToLibrary(book) {
   if (book.author && book.title) {
-    let newBook = `<div
+    const newBook = `<div
     class="col-sm-2 d-flex align-items-stretch card book text-white m-2" id="book${book.index}"
     >
     <div
@@ -36,69 +21,69 @@ function addBookToLibrary(book) {
     <p class="card-text">by</p>
     <p class="card-text">${book.author}</p>
     <p class="card-text">${book.pages} pages</p>
-    <p class="card-text"><button id="btnBook${book.index}" type="button" class="btn btn-secondary" onclick="myLibrary[${book.index}].toggleRead();">${
-      book.read ? "Read" : "Unread"
-    }</button></p>
+    <p class="card-text"><button id="btnBook${
+  book.index
+}" type="button" class="btn btn-secondary" onclick="toggleButton(${book.index})">${
+  book.read ? 'Read' : 'Unread'
+}</button></p>
     </div>
-    <button class="btn btn-primary" onclick="removeBookFromLibrary(${get(`index`)})"> Remove </button>
+    <button class="btn btn-primary" onclick="removeBookFromLibrary(${book.index})"> Remove </button>
     </div>`;
 
     render(newBook, shelf);
   } else {
-    alert("Author and title needed to create book");
+    alert('Author and title are required');
   }
 }
 
 function removeBookFromLibrary(bookIndex) {
-  delete myLibrary[bookIndex];
   remove(`book${bookIndex}`);
-  let removeBook = document.getElementById("book" + bookIndex);
-  removeBook.remove();
+  document.getElementById(`book${bookIndex}`).remove();
+}
+function toggleButton(index) {
+  const parsed = JSON.parse(get(`book${index}`));
+  parsed.read = parsed.read !== true;
+  set(`book${index}`, parsed);
+  const btn = document.getElementById(`btnBook${index}`);
+  btn.innerText = btn.innerText === 'Read' ? 'Unread' : 'Read';
+}
+
+function Book(author, title, pages, read) {
+  this.author = author;
+  this.title = title;
+  this.pages = pages;
+  this.read = read;
+  this.index = get('index');
+  set('index', parseInt(get('index'), 10) + 1);
+  this.toggleRead = function toggleRead() {
+    this.read = !this.read;
+    toggleButton(this.index);
+  };
 }
 
 function createFromForm(form) {
-  author = form.author.value;
-  title = form.title.value;
-  pages = form.pages.value ? parseInt(form.pages.value) : "unknown";
-  read = form.read.checked;
-  let book = new Book(author, title, pages, read);
+  const author = form.author.value;
+  const title = form.title.value;
+  const pages = form.pages.value ? parseInt(form.pages.value, 10) : 'unknown';
+  const read = form.read.checked;
+  const book = new Book(author, title, pages, read);
   set(`book${book.index}`, book);
   addBookToLibrary(book);
   form.reset();
 }
 
-function toggleButton(index) {
-  let parsed = JSON.parse(get(index)).read;
-  parsed = parsed == true ? false : true;
-  console.log(parsed);
-  let btn = document.getElementById("btnBook" + index);
-  btn.innerText = btn.innerText == "Read" ? "Unread" : "Read";
-  localStorage.set(index, )
+function ready() {
+  Object.keys(localStorage).map(x => {
+    if (typeof JSON.parse(localStorage[x]) === 'object') {
+      const add = JSON.parse(localStorage[x]);
+      addBookToLibrary(add);
+    }
+    return null;
+  });
 }
 
-function docReady(fn) {
-  // see if DOM is already available
-  if (
-    document.readyState === "complete" ||
-    document.readyState === "interactive"
-  ) {
-    // call on next available tick
-    setTimeout(fn, 1);
-  } else {
-    document.addEventListener("DOMContentLoaded", fn);
-  }
+if (document.readyState !== 'loading') {
+  ready();
+} else {
+  document.addEventListener('DOMContentLoaded', ready);
 }
-
-docReady(function () {
-  for (const key in localStorage) {
-    try {
-      if (typeof (JSON.parse(localStorage[key])) == 'object') {
-        let add = (JSON.parse(localStorage[key]))
-        console.log(add)
-        addBookToLibrary(add)
-      }
-    }
-    catch(error){
-    }
-  }
-});
