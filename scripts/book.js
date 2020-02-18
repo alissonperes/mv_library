@@ -1,4 +1,14 @@
 let myLibrary = [];
+
+const set = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const get = key => localStorage.getItem(key);
+const remove = key => localStorage.removeItem(key);
+const setBooks = value => {
+  let books = JSON.parse(localStorage.getItem("books")) || [];
+  books.push(value);
+  set("books", books);
+};
+
 let shelf = document.getElementById("shelf");
 let index = 0;
 
@@ -11,7 +21,8 @@ function Book(author, title, pages, read) {
   this.title = title;
   this.pages = pages;
   this.read = read;
-  this.index = index++;
+  this.index = index;
+  set("index", index++);
   this.toggleRead = function() {
     this.read = !this.read;
     toggleButton(this.index);
@@ -36,9 +47,8 @@ function addBookToLibrary(author, title, pages, read) {
     </div>
     <button class="btn btn-primary" onclick="removeBookFromLibrary(${index})"> Remove </button>
     </div>`;
-    let book = new Book(author, title, pages, read);
+
     render(newBook, shelf);
-    myLibrary.push(book);
   } else {
     alert("Author and title needed to create book");
   }
@@ -46,6 +56,7 @@ function addBookToLibrary(author, title, pages, read) {
 
 function removeBookFromLibrary(bookIndex) {
   delete myLibrary[bookIndex];
+  remove(String(bookIndex));
   let removeBook = document.getElementById("book" + bookIndex);
   removeBook.remove();
 }
@@ -55,7 +66,8 @@ function createFromForm(form) {
   title = form.title.value;
   pages = form.pages.value ? parseInt(form.pages.value) : "unknown";
   read = form.read.checked;
-
+  let book = new Book(author, title, pages, read);
+  setBooks(book);
   addBookToLibrary(author, title, pages, read);
   form.reset();
 }
@@ -65,5 +77,23 @@ function toggleButton(index) {
   btn.innerText = btn.innerText == "Read" ? "Unread" : "Read";
 }
 
-addBookToLibrary("C.S. Lewis", "Narnia", 200, false);
-addBookToLibrary("Isaac Asmiov", "I, Robot", 50, false);
+function docReady(fn) {
+  // see if DOM is already available
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    // call on next available tick
+    setTimeout(fn, 1);
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+
+docReady(function() {
+  if (get("books")) {
+    JSON.parse(get("books")).map(x => {
+      addBookToLibrary(x.author, x.title, x.pages, x.read);
+    });
+  }
+});
