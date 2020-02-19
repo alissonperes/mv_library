@@ -9,10 +9,10 @@ HTM
 CSS
 Bootstrap 4
 
-## Author
+## Authors
 
-Eduardo Gutierrez https://github.com/fedgut/
-Alisson Peres https://github.com/alissonperes/
+- Eduardo Gutierrez https://github.com/fedgut/
+- Alisson Peres https://github.com/alissonperes/
 
 ## Getting started
 
