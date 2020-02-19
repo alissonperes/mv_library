@@ -1,0 +1,26 @@
+{
+  "name": "mv_library",
+  "version": "1.0.0",
+  "description": "This projectBuilds a small Library App to keep track of books you have read and books you want to read. You can check the complete description [here - project 1](https://www.theodinproject.com/courses/javascript/lessons/library)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alissonperes/mv_library.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alissonperes/mv_library/issues"
+  },
+  "homepage": "https://github.com/alissonperes/mv_library#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
+  },
+  "dependencies": {},
+  "keywords": []
+}
